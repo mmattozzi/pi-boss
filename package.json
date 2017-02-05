@@ -1,0 +1,23 @@
+{
+  "name": "pi-boss",
+  "version": "1.0.0",
+  "description": "Socket.io based server and clients for communicating with raspberry pis",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "raspberry pi",
+    "socket.io"
+  ],
+  "author": "mike.mattozzi@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.1",
+    "glob": "^7.1.1",
+    "socket.io": "^1.7.2",
+    "socket.io-client": "^1.7.2",
+    "mysql": "2.13.0",
+    "rpi-gpio": "0.7.0"
+  }
+}

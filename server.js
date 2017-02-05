@@ -1,6 +1,7 @@
 var http = require('http');
 var express = require('express');
 var mysql = require('mysql');
+var os = require("os");
 var temperatureServer = require('./temperature-server');
 
 var mysqlPool = mysql.createPool({
@@ -19,11 +20,11 @@ var socketHandlers = new Object();
 io.on('connection', function(socket) {
     var host = "";
 		console.log("Got connection from: " + socket.id);
-    socket.emit('status', { status: 'connected'} );
+    socket.emit('init', { server: os.hostname() } );
     socket.on('register', function(data) {
       host = data.host;
 			func = data.function; 
-      console.log("Registering socket to: " + data.function);
+      console.log("Registering socket " + socket.id + " to: " + data.function + " on host: " + host);
       socketHandlers[data.function] = function(callback) {
         socket.emit('query', {function: data.function}, function(ackData) {
             callback(ackData);
@@ -54,12 +55,23 @@ io.on('connection', function(socket) {
 	});
   
     socket.on('disconnect', function() {
-      console.log("Socket disconnected");
+      console.log("Socket disconnected: " + host);
     });
+});
+
+app.get('*', function(req, res, next) {
+	var func = req.path.substring(1);
+	if (func in socketHandlers) {
+		socketHandlers[func](function(data) {
+			res.type("text/plain").send(String(data));
+		});
+	} else {
+		next();
+	}
 });
 
 // Register temperature server URL handlers
 temperatureServer(app, socketHandlers, mysqlPool);
 
 server.listen(8081);
-console.log('Server running');
+console.log('Server running on port 8081...');

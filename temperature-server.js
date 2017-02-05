@@ -1,11 +1,5 @@
 module.exports = function(app, socketHandlers, mysqlPool) {
   
-  app.get('/temperature', function(req, res) {
-    socketHandlers["temperature"](function(data) {
-      res.type("text/plain").send(String(data));
-    });
-  });
-
   app.get('/high-temperature', function(req, res) {
     mysqlPool.getConnection(function(err, connection) {
       if (err) {

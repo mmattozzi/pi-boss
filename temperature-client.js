@@ -44,8 +44,8 @@ socket.on('connect', function() {
     console.log("Got connect event");
 });
 
-socket.on('status', function(data) {
-    console.log("Got status message: " + JSON.stringify(data));
+socket.on('init', function(data) {
+    console.log("Got init message: " + JSON.stringify(data));
     socket.emit('register', { function: 'temperature', host: os.hostname() });
 });
 

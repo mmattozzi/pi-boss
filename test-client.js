@@ -1,12 +1,22 @@
-var socket = require('socket.io-client')('http://localhost:8081');
+if (process.argv.length  < 3) {
+  console.log("Usage: node temperature-client.js <server url>");
+  process.exit(1);
+}
+
+var os = require("os");
+var socket = require('socket.io-client')(process.argv[2]);
 
 socket.on('connect', function() {
     console.log("Got connect event");
+    setInterval(function() {
+        var logMessage = { type: 'numeric', name: 'test', value: data };
+        socket.emit('log', logMessage);
+    }, 600000);
 });
 
-socket.on('status', function(data) {
-    console.log("Got status message: " + JSON.stringify(data));
-    socket.emit('register', { function: 'temperature'});
+socket.on('init', function(data) {
+    console.log("Got init message: " + JSON.stringify(data));
+    socket.emit('register', { function: 'test', host: os.hostname() });
 });
 
 socket.on('query', function(data, callback) {
